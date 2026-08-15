@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.identity.models import User
 from app.identity.repository import (
     RoleRepository,
     SessionRepository,
@@ -16,7 +17,6 @@ from app.identity.security import (
     hash_token,
     verify_password,
 )
-from app.identity.models import User
 
 
 class AuthenticationError(Exception):
@@ -55,9 +55,7 @@ class AuthenticationService:
             )
 
         if username:
-            existing_username = await self.users.get_by_username(
-                username
-            )
+            existing_username = await self.users.get_by_username(username)
 
             if existing_username is not None:
                 raise RegistrationError(
@@ -73,21 +71,27 @@ class AuthenticationService:
                 password_hash=password_hash,
             )
 
-            # Default role assignment.
             role = await self.roles.get_by_name("user")
 
-            if role is not None:
-                user.roles.append(role)
+            if role is None:
+                await self.db.rollback()
+                raise RegistrationError(
+                    "Default user role is not configured."
+                )
+
+            # The user is newly created, so replace the relationship
+            # collection instead of triggering an implicit lazy load.
+            user.roles = [role]
 
             await self.db.commit()
-
             await self.db.refresh(user)
 
             return user
 
+        except RegistrationError:
+            raise
         except IntegrityError:
             await self.db.rollback()
-
             raise RegistrationError(
                 "Unable to create account."
             )
@@ -100,7 +104,6 @@ class AuthenticationService:
         user_agent: str | None = None,
         ip_address: str | None = None,
     ) -> tuple[str, str, int]:
-
         email = email.strip().lower()
 
         user = await self.users.get_by_email(email)
@@ -120,25 +123,17 @@ class AuthenticationService:
                 "This account does not use password authentication."
             )
 
-        if not verify_password(
-            password,
-            user.password_hash,
-        ):
+        if not verify_password(password, user.password_hash):
             raise AuthenticationError(
                 "Invalid email or password."
             )
 
         access_token = create_access_token(user.id)
-
         refresh_token = create_refresh_token()
-
         refresh_token_hash = hash_token(refresh_token)
 
         now = datetime.now(timezone.utc)
-
-        expires_at = now + timedelta(
-            days=settings.refresh_token_expire_days
-        )
+        expires_at = now + timedelta(days=settings.refresh_token_expire_days)
 
         await self.sessions.create(
             user_id=user.id,
@@ -163,12 +158,9 @@ class AuthenticationService:
         user_agent: str | None = None,
         ip_address: str | None = None,
     ) -> tuple[str, str, int]:
-
         token_hash = hash_token(refresh_token)
 
-        session = await self.sessions.get_by_refresh_token_hash(
-            token_hash
-        )
+        session = await self.sessions.get_by_refresh_token_hash(token_hash)
 
         if session is None:
             raise AuthenticationError(
@@ -194,21 +186,11 @@ class AuthenticationService:
                 "User account is unavailable."
             )
 
-        # Rotate the refresh token.
-        await self.sessions.revoke(
-            session,
-            revoked_at=now,
-        )
+        await self.sessions.revoke(session, revoked_at=now)
 
         new_refresh_token = create_refresh_token()
-
-        new_refresh_token_hash = hash_token(
-            new_refresh_token
-        )
-
-        new_expires_at = now + timedelta(
-            days=settings.refresh_token_expire_days
-        )
+        new_refresh_token_hash = hash_token(new_refresh_token)
+        new_expires_at = now + timedelta(days=settings.refresh_token_expire_days)
 
         await self.sessions.create(
             user_id=user.id,
@@ -228,20 +210,12 @@ class AuthenticationService:
             settings.access_token_expire_minutes * 60,
         )
 
-    async def logout(
-        self,
-        *,
-        refresh_token: str,
-    ) -> None:
-
+    async def logout(self, *, refresh_token: str) -> None:
         token_hash = hash_token(refresh_token)
 
-        session = await self.sessions.get_by_refresh_token_hash(
-            token_hash
-        )
+        session = await self.sessions.get_by_refresh_token_hash(token_hash)
 
         if session is None:
-            # Logout should be idempotent.
             return
 
         if session.revoked_at is None:
