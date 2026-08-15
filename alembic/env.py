@@ -7,18 +7,12 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.core.config import settings
 from app.core.database import Base
-
-# Import models so SQLAlchemy registers them with Base.metadata.
+from app.ai import models as ai_models  # noqa: F401
 from app.identity import models as identity_models  # noqa: F401
 
 
 config = context.config
-
-# Use the application's environment configuration.
-config.set_main_option(
-    "sqlalchemy.url",
-    settings.database_url.replace("%", "%%"),
-)
+config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -28,19 +22,12 @@ target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-    """
-    Run migrations without creating a database connection.
-    """
-
     url = config.get_main_option("sqlalchemy.url")
-
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={
-            "paramstyle": "named",
-        },
+        dialect_opts={"paramstyle": "named"},
         compare_type=True,
     )
 
@@ -49,13 +36,6 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    """
-    Configure Alembic using an active synchronous connection.
-
-    SQLAlchemy runs this function through run_sync() when using
-    an async engine.
-    """
-
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
@@ -67,10 +47,6 @@ def do_run_migrations(connection: Connection) -> None:
 
 
 async def run_migrations_online() -> None:
-    """
-    Run migrations using the application's async database engine.
-    """
-
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
