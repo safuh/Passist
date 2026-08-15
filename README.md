@@ -1,6 +1,6 @@
 # PAssist — AI Operating Platform
 
-PAassist is a provider-agnostic **AI Operating Platform**, not a single chatbot. It is being built as a durable backend capable of hosting multiple AI providers, agents, tools, retrieval systems, plugins, authenticated users, and eventually multi-user/workspace deployments.
+PAssist is a provider-agnostic **AI Operating Platform**, not a single chatbot. It is being built as a durable backend capable of hosting multiple AI providers, agents, tools, retrieval systems, plugins, authenticated users, and eventually multi-user/workspace deployments.
 
 > The project is also a reference implementation of a reusable Python backend foundation. The framework is not the architecture: FastAPI supplies the HTTP layer, while the application owns the domain, security, persistence, provider abstractions, and runtime boundaries.
 
@@ -23,7 +23,6 @@ Authorization       Rate limits
   +---------+---------+---------+---------+
   |         |         |         |         |
 Identity Conversations AI Runtime Tool Runtime Documents
-  |         |         |         |         |
   |         |         +-- providers         +-- RAG
   |         |            +-- Ollama        +-- vector store
   |         |            +-- OpenAI        +-- ingestion
