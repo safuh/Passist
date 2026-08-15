@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "passist"
 version = "0.1.0"
-description = "A provider-agnostic personal AI assistant platform"
+description = "A provider-agnostic AI operating platform"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi",
@@ -14,12 +14,14 @@ dependencies = [
     "asyncpg",
     "aiosqlite",
     "alembic",
-    "pydantic",
-    "pydantic-settings",
+    "pydantic>=2",
+    "pydantic-settings>=2",
     "python-dotenv",
     "structlog",
     "pyjwt",
     "argon2-cffi",
+    "httpx",
+    "cryptography",
 ]
 
 [project.optional-dependencies]
