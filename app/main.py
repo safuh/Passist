@@ -5,6 +5,7 @@ from app.ai.router import router as ai_router
 from app.core.config import settings
 from app.core.lifespan import lifespan
 from app.core.logging import configure_logging
+from app.identity.api_key_router import router as api_key_router
 from app.identity.router import router as identity_router
 
 
@@ -18,6 +19,7 @@ app = FastAPI(
 )
 
 app.include_router(identity_router, prefix=settings.api_prefix)
+app.include_router(api_key_router, prefix=settings.api_prefix)
 app.include_router(ai_router, prefix=settings.api_prefix)
 
 
