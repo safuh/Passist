@@ -1,232 +1,182 @@
 # PAssist Milestone / Completion Tracker
 
-Last updated: 2026-08-15
+Last updated: 2026-08-19
 
 Status legend:
-
 - `[x]` Complete and committed
 - `[~]` In progress / partially complete
 - `[ ]` Planned
 
 ## Phase 0 — Architecture and foundation
-
-### M0.1 Architecture
-
-- [x] Provider-agnostic architecture defined
-- [x] Domain/bounded-context structure defined
-- [x] Dependency inversion principle established
-- [x] Stateless JWT authentication direction established
-- [x] Async-first application direction established
-- [x] Configuration-over-code principle established
-- [x] PostgreSQL production / SQLite development strategy established
-- [x] Alembic migration strategy established
-
-### M0.2 Application foundation
-
-- [x] `pyproject.toml`
+- [x] Provider-agnostic architecture
+- [x] Domain/bounded-context structure
+- [x] Dependency inversion
+- [x] Stateless JWT direction
+- [x] Async-first direction
+- [x] Configuration-over-code
+- [x] PostgreSQL production / SQLite development strategy
+- [x] Alembic migration strategy
 - [x] pydantic-settings configuration
 - [x] async SQLAlchemy engine/session factory
 - [x] application lifespan
 - [x] structured logging
-- [x] timezone-aware UTC datetime handling
-- [x] Alembic async environment
-- [x] database migrations from day one
+- [x] UTC-aware datetime handling
+- [x] async Alembic environment
 
 ## Phase 1 — Identity
 
-### M1.1 Identity schema
-
-- [x] users
-- [x] roles
-- [x] permissions
-- [x] user_roles
-- [x] role_permissions
+### M1.1 Schema
+- [x] users, roles, permissions
+- [x] user_roles, role_permissions
 - [x] sessions / refresh-token persistence
-- [x] API key persistence foundation
-- [x] OAuth account persistence foundation
-- [x] default `user` role migration
+- [x] API key persistence
+- [x] OAuth account persistence
+- [x] default user role
+- [x] default permission seed migration
 
 ### M1.2 Authentication
-
 - [x] Argon2 password hashing
-- [x] registration
-- [x] login
+- [x] registration / login
 - [x] JWT access tokens
-- [x] refresh tokens
-- [x] refresh-token hashing
-- [x] refresh-token rotation
-- [x] refresh-token revocation
-- [x] logout
+- [x] refresh-token hashing and rotation
+- [x] revocation / logout
 - [x] authenticated `/me`
 - [x] inactive-account rejection
 - [x] async-safe relationship loading
-- [x] UTC-aware refresh-token expiry checks
+- [x] UTC-aware expiry checks
 - [ ] authentication integration test suite
 
-### M1.3 Authorization
-
-- [~] role/permission data model
-- [ ] permission constants / naming convention
-- [ ] `require_permission(...)` dependency
+### M1.3 Authorization and API keys
+- [x] stable permission constants
+- [x] `require_permission(...)`
+- [x] role/permission resolution
+- [x] JWT and `X-API-Key` principal authentication
+- [x] one-time API-key secret issuance
+- [x] API-key listing without secrets
+- [x] API-key revocation
+- [x] API-key expiry and last-used tracking
+- [x] authorization unit tests
 - [ ] role management service
-- [ ] API-key authentication
-- [ ] API-key lifecycle endpoints
 - [ ] authorization integration tests
+- [ ] scoped API-key capabilities
 
 ## Phase 2 — AI runtime
-
 ### M2.1 Provider abstraction
-
 - [x] provider-neutral message contract
 - [x] provider-neutral chat response
 - [x] embeddings contract
 - [x] model discovery contract
-- [~] streaming contract defined
-- [x] no provider SDK dependency in application services
+- [~] streaming contract
+- [x] application services independent of provider SDKs
 
 ### M2.2 Provider adapters
-
-- [x] Ollama adapter
-- [x] OpenAI-compatible adapter
-- [ ] Anthropic adapter
-- [ ] Gemini adapter
-- [ ] generic custom HTTP provider adapter
-- [ ] provider capability negotiation
-- [ ] provider error normalization
-- [ ] provider retry/backoff policy
-- [ ] provider health checks
+- [x] Ollama
+- [x] OpenAI-compatible
+- [ ] Anthropic
+- [ ] Gemini
+- [ ] generic custom HTTP provider
+- [ ] capability negotiation
+- [ ] normalized provider errors
+- [ ] retry/backoff policy
+- [ ] health checks
 
 ### M2.3 Provider registry/configuration
-
-- [x] persisted provider configuration model
-- [x] owner-scoped provider repository
-- [x] provider registry
-- [x] provider type discovery endpoint
-- [x] encrypted provider API-key persistence
-- [x] provider creation endpoint
-- [x] provider listing endpoint
-- [ ] provider update endpoint
-- [ ] provider delete endpoint
-- [ ] provider test-connection endpoint
+- [x] persisted provider model
+- [x] owner-scoped repository
+- [x] registry
+- [x] provider type discovery
+- [x] encrypted provider credentials
+- [x] create/list endpoints
+- [ ] update/delete endpoints
+- [ ] test-connection endpoint
 - [ ] default provider/model selection
 - [ ] provider-level permissions
 
 ## Phase 3 — Conversations
-
 - [ ] conversation entity
-- [ ] message entity
-- [ ] message roles
-- [ ] conversation ownership
-- [ ] model/provider selection metadata
-- [ ] token/usage accounting
-- [ ] conversation service
-- [ ] conversation repository
-- [ ] conversation API
+- [ ] message entity and roles
+- [ ] ownership
+- [ ] provider/model metadata
+- [ ] usage accounting
+- [ ] repository/service/API
 - [ ] context-window management
-- [ ] message pagination
-- [ ] soft deletion / archival
+- [ ] pagination
+- [ ] archival
 
-## Phase 4 — Streaming and runtime execution
-
+## Phase 4 — Streaming
 - [ ] streaming provider contract
-- [ ] SSE response layer
-- [ ] cancellation handling
+- [ ] SSE layer
+- [ ] cancellation
 - [ ] timeout policy
-- [ ] partial-response persistence strategy
+- [ ] partial-response persistence
 - [ ] provider error mapping
-- [ ] request correlation IDs
+- [ ] correlation IDs
 - [ ] runtime telemetry
 
 ## Phase 5 — Tool Runtime
-
-- [ ] tool interface
-- [ ] tool schema / JSON Schema contract
-- [ ] tool registry
-- [ ] tool permissions
-- [ ] tool execution sandbox boundary
-- [ ] tool invocation audit events
-- [ ] email tool
-- [ ] calendar tool
-- [ ] filesystem/document tool
-- [ ] database tool
-- [ ] custom tool/plugin interface
-- [ ] tool result normalization
+- [ ] tool contract / JSON Schema
+- [ ] registry
+- [ ] capability authorization
+- [ ] execution timeouts and cancellation
+- [ ] sandbox boundary
+- [ ] audit events
+- [ ] email/calendar/files/database tools
+- [ ] plugin bridge
 
 ## Phase 6 — Documents and RAG
-
-- [ ] document entity
-- [ ] document versions
-- [ ] ingestion pipeline
-- [ ] text extraction
-- [ ] chunking strategy
-- [ ] embedding pipeline
-- [ ] ChromaDB integration
+- [ ] document/version model
+- [ ] ingestion and extraction
+- [ ] chunking
+- [ ] embeddings
+- [ ] ChromaDB
 - [ ] retrieval service
-- [ ] citation metadata
-- [ ] access-control-aware retrieval
-- [ ] background ingestion jobs
+- [ ] citations
+- [ ] access-controlled retrieval
+- [ ] background ingestion
 
 ## Phase 7 — Memory and personalization
-
-- [ ] memory model
-- [ ] explicit user memories
-- [ ] inferred memory policy
-- [ ] memory retrieval
-- [ ] memory write/update/delete
+- [ ] memory model and lifecycle
+- [ ] explicit/inferred memory policy
+- [ ] retrieval and mutation
 - [ ] privacy controls
-- [ ] memory expiration / lifecycle
 - [ ] personalization context builder
 
 ## Phase 8 — Agents and plugins
-
-- [ ] agent model
-- [ ] agent configuration
-- [ ] system prompts
-- [ ] agent tool permissions
-- [ ] agent/provider selection
-- [ ] agent execution runtime
-- [ ] plugin manifest
-- [ ] plugin registry
-- [ ] plugin permissions/capabilities
-- [ ] plugin lifecycle/versioning
+- [ ] agent model/configuration
+- [ ] prompts
+- [ ] tool/provider selection
+- [ ] execution runtime
+- [ ] plugin manifest/registry
+- [ ] capability permissions
+- [ ] lifecycle/versioning
 
 ## Phase 9 — Multi-user / multi-tenant deployment
-
-- [ ] workspace model
-- [ ] organization model
-- [ ] memberships
-- [ ] workspace roles
+- [ ] workspaces / organizations
+- [ ] memberships and workspace roles
 - [ ] resource ownership boundaries
-- [ ] tenant-aware repositories
-- [ ] tenant-aware authorization
-- [ ] per-tenant provider configuration
-- [ ] per-tenant rate limits
+- [ ] tenant-aware repositories/authorization
+- [ ] per-tenant providers/rate limits
 - [ ] isolation tests
 
 ## Phase 10 — Production hardening
-
-- [ ] Redis cache
+- [ ] Redis
 - [ ] distributed rate limiting
-- [ ] background workers (Celery or Dramatiq)
-- [ ] audit event pipeline
-- [ ] structured application metrics
-- [ ] tracing / OpenTelemetry
-- [ ] database connection-pool tuning
-- [ ] health/readiness probes
-- [ ] graceful shutdown under load
-- [ ] secrets manager/KMS integration
-- [ ] containerization
-- [ ] CI/CD
-- [ ] automated migration deployment
-- [ ] backup/restore procedures
+- [ ] background workers
+- [ ] audit pipeline
+- [ ] metrics / tracing
+- [ ] database pool tuning
+- [ ] readiness / graceful shutdown
+- [ ] secrets manager/KMS
+- [ ] containers / CI/CD
+- [ ] migration deployment
+- [ ] backup/restore
 - [ ] security review
-- [ ] load testing
-- [ ] failure-mode testing
+- [ ] load/failure testing
 
 ## Current checkpoint
 
-**Completed:** Foundation + core identity + initial AI abstraction/registry.
+**Completed:** Foundation, core authentication, initial AI abstraction/registry, and first authorization/API-key implementation.
 
-**Current active work:** Finish Identity authorization/API-key lifecycle and then build Conversations.
+**Active:** Harden Identity with integration tests and scoped API-key capabilities, then build Conversations.
 
-**Architectural rule:** A milestone is not considered complete merely because the endpoint works. It is complete when its domain model, service boundary, persistence behavior, failure modes, security implications, tests, and migration path are sufficiently defined for the next layer to depend on it.
+**Completion rule:** A milestone is complete only when its domain model, service boundary, persistence behavior, failure modes, security implications, tests, and migration path are sufficiently defined for the next layer to depend on it.
